@@ -1,7 +1,7 @@
 """
 Implements a standard SVM
 """
-from __future__ import print_function, division
+
 import numpy as np
 from misvm.quadprog import quadprog
 from misvm.kernel import by_name as kernel_by_name

@@ -1,4 +1,4 @@
-from __future__ import print_function, division
+
 from cvxopt import matrix as cvxmat, sparse, spmatrix
 from cvxopt.solvers import qp, options
 from sys import stderr
@@ -108,7 +108,7 @@ def quadprog(H, f, Aeq, beq, lb, ub, verbose=False, fix_pd=False):
 
 def speye(n):
     """Create a sparse identity matrix"""
-    r = range(n)
+    r = list(range(n))
     return spmatrix(1.0, r, r)
 
 
@@ -141,7 +141,7 @@ def _convert(H, f, Aeq, beq, lb, ub):
 
 def _apply_options(option_dict):
     old_settings = {}
-    for k, v in option_dict.items():
+    for k, v in list(option_dict.items()):
         old_settings[k] = options.get(k, None)
         if v is None:
             del options[k]

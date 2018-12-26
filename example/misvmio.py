@@ -1,7 +1,7 @@
 """
 Parses and represents C4.5 MI data sets
 """
-from __future__ import print_function, division
+
 import os
 import re
 import sys
@@ -216,7 +216,7 @@ class Bag(MutableSequence):
     """
 
     def __init__(self, bag_id, examples):
-        classes = map(lambda x: x[-1], examples)
+        classes = [x[-1] for x in examples]
         if any(classes):
             self.label = True
         else:
@@ -259,7 +259,7 @@ def bag_set(exampleset, bag_attr=0):
     bag_dict = defaultdict(list)
     for example in exampleset:
         bag_dict[example[bag_attr]].append(example)
-    return [Bag(bag_id, value) for bag_id, value in bag_dict.items()]
+    return [Bag(bag_id, value) for bag_id, value in list(bag_dict.items())]
 
 
 def parse_c45(file_base, rootdir='.'):
@@ -431,7 +431,7 @@ def save_c45(example_set, basename, basedir='.'):
 
     with open(data_name, 'w+') as data_file:
         for example in example_set:
-            ex_strs = starmap(_feature_to_str, zip(example.schema, example))
+            ex_strs = starmap(_feature_to_str, list(zip(example.schema, example)))
             data_file.write('%s.\n' % ','.join(ex_strs))
 
 

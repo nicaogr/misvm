@@ -3,7 +3,7 @@ Implements standard code for problems that
 require the Concave-Convex Procedure (CCCP),
 or similar iteration.
 """
-from __future__ import print_function, division
+
 from sys import stderr
 
 

@@ -1,7 +1,7 @@
 """
 Implements mi-SVM and MI-SVM
 """
-from __future__ import print_function, division
+
 import numpy as np
 from random import uniform
 from cvxopt import matrix as cvxmat, sparse
@@ -103,7 +103,7 @@ class MISVM(SIL):
             kernel = kernel_by_name(self.kernel, gamma=self.gamma, p=self.p)
             K_all = kernel(bs.instances, bs.instances)
 
-            neg_selectors = np.array(range(bs.L_n))
+            neg_selectors = np.array(list(range(bs.L_n)))
 
             class MISVMCCCP(CCCP):
 

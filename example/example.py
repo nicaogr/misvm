@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import print_function, division
+
 
 import numpy as np
 
@@ -30,18 +30,26 @@ def main():
 
     # Construct classifiers
     classifiers = {}
-    classifiers['MissSVM'] = misvm.MissSVM(kernel='linear', C=1.0, max_iters=10)
-    classifiers['sbMIL'] = misvm.sbMIL(kernel='linear', eta=0.1, C=1.0)
     classifiers['SIL'] = misvm.SIL(kernel='linear', C=1.0)
+    classifiers['MISVM'] = misvm.MISVM(kernel='linear', C=1.0, max_iters=50)
+    classifiers['miSVM'] = misvm.miSVM(kernel='linear', C=1.0, max_iters=50)
+    classifiers['NSK'] = misvm.NSK()
+    classifiers['STK'] = misvm.STK()
+    classifiers['MissSVM'] = misvm.MissSVM(kernel='linear', C=1.0, max_iters=10)
+    classifiers['sMIL'] = misvm.sMIL(kernel='linear', C=1.0)
+    classifiers['stMIL'] = misvm.stMIL(kernel='linear', C=1.0)
+    classifiers['sbMIL'] = misvm.sbMIL(kernel='linear', eta=0.1, C=1.0)
+    classifiers['MICA'] = misvm.MICA()
+    
 
     # Train/Evaluate classifiers
     accuracies = {}
-    for algorithm, classifier in classifiers.items():
+    for algorithm, classifier in list(classifiers.items()):
         classifier.fit(train_bags, train_labels)
         predictions = classifier.predict(test_bags)
         accuracies[algorithm] = np.average(test_labels == np.sign(predictions))
 
-    for algorithm, accuracy in accuracies.items():
+    for algorithm, accuracy in list(accuracies.items()):
         print('\n%s Accuracy: %.1f%%' % (algorithm, 100 * accuracy))
 
 

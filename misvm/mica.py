@@ -1,7 +1,7 @@
 """
 Implements the MICA algorithm
 """
-from __future__ import print_function, division
+
 import sys
 import numpy as np
 import scipy.sparse as sp
@@ -55,7 +55,7 @@ class MICA(SVM):
                       object containing m instances with k features
         @param y : an array-like object of length n containing -1/+1 labels
         """
-        self._bags = map(np.asmatrix, bags)
+        self._bags = list(map(np.asmatrix, bags))
         bs = BagSplitter(self._bags,
                          np.asmatrix(y).reshape((-1, 1)))
         self._X = bs.instances
@@ -227,7 +227,7 @@ def linprog(*args, **kwargs):
 
 def spo(r, v=1.0):
     """Create a sparse one vector"""
-    return spmatrix(v, range(r), r * [0])
+    return spmatrix(v, list(range(r)), r * [0])
 
 
 def t(list_of_lists):
@@ -235,4 +235,4 @@ def t(list_of_lists):
     Transpose a list of lists, since 'sparse'
     takes arguments in column-major order.
     """
-    return map(list, zip(*list_of_lists))
+    return list(map(list, list(zip(*list_of_lists))))

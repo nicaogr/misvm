@@ -1,7 +1,7 @@
 """
 Implements stMIL
 """
-from __future__ import print_function, division
+
 import numpy as np
 from random import uniform
 
@@ -45,7 +45,7 @@ class stMIL(NSK):
                       object containing m instances with k features
         @param y : an array-like object of length n containing -1/+1 labels
         """
-        self._bags = map(np.asmatrix, bags)
+        self._bags = list(map(np.asmatrix, bags))
         bs = BagSplitter(self._bags,
                          np.asmatrix(y).reshape((-1, 1)))
         self._all_bags = bs.neg_inst_as_bags + bs.pos_inst_as_bags + bs.pos_bags

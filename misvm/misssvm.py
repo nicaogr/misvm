@@ -1,7 +1,7 @@
 """
 Implements MissSVM
 """
-from __future__ import print_function, division
+
 import numpy as np
 import scipy.sparse as sp
 from random import uniform
@@ -48,7 +48,7 @@ class MissSVM(MICA):
                       object containing m instances with k features
         @param y : an array-like object of length n containing -1/+1 labels
         """
-        self._bags = map(np.asmatrix, bags)
+        self._bags = list(map(np.asmatrix, bags))
         bs = BagSplitter(self._bags,
                          np.asmatrix(y).reshape((-1, 1)))
         self._X = np.vstack([bs.pos_instances,
