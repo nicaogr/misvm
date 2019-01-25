@@ -6,7 +6,8 @@ import numpy as np
 from misvmio import parse_c45, bag_set
 import misvm
 from ExtractBirds import ExtractBirds
-from ExtractSIVAL import ExtractSIVAL
+from ExtractSIVAL import ExtractSIVAL,ExtractSubsampledSIVAL
+from ExtractNewsgroups import ExtractNewsgroups
 from sklearn.model_selection import KFold
 
 def main():
@@ -125,8 +126,74 @@ def testSIVAL():
             print('\n%s Bag Accuracy: %.1f%%' % (algorithm, 100 * bag_accuracy))
             print('\n%s Instance Accuracy: %.1f%%' % (algorithm, 100 * instances_accuracy))
             
+def testSubsampledSIVAL():
+    Dataset = ExtractSubsampledSIVAL()
+    list_names,bags,labels_bags,labels_instance = Dataset
+    
+    nFolds=2
+    r = 0
+    num_sample = 5
+    for k in range(num_sample):
+        for c_i,c in enumerate(list_names):
+            # Loop on the different class, we will consider each group one after the other
+            print("For class :",c)
+            labels_bags_c = labels_bags[c_i][k]
+            labels_instance_c = labels_instance[c_i][k]
+            bags_k = bags[c_i][k]
+            
+            kf = KFold(n_splits=nFolds, shuffle=True, random_state=r)
+            algorithm = 'SIL'
+            for train_index, test_index in kf.split(labels_bags_c):
+                labels_bags_c_train, labels_bags_c_test = \
+                    getTest_and_Train_Sets(labels_bags_c,train_index,test_index)
+                bags_train, bags_test = \
+                    getTest_and_Train_Sets(bags_k,train_index,test_index)
+                _ , labels_instance_c_test = \
+                    getTest_and_Train_Sets(labels_instance_c,train_index,test_index)
+                classifier = misvm.SIL(kernel='linear', C=1.0)
+                classifier.fit(bags_train, labels_bags_c_train)
+    #            predictions = classifier.predict(bags_test)
+                pred_bag_labels, pred_instance_labels = classifier.predict(bags_test, instancePrediction=True)
+                bag_accuracy = np.average(labels_bags_c_test == np.sign(pred_bag_labels))
+                gt_instances_labels_stack = np.hstack(np.array(labels_instance_c_test))
+                instances_accuracy = np.average(gt_instances_labels_stack == np.sign(pred_instance_labels))
+                print('\n%s Bag Accuracy: %.1f%%' % (algorithm, 100 * bag_accuracy))
+                print('\n%s Instance Accuracy: %.1f%%' % (algorithm, 100 * instances_accuracy))
+                
+def testNewsgroups():
+    Dataset = ExtractNewsgroups()
+    list_names,bags,labels_bags,labels_instance = Dataset
+    
+    nFolds=2
+    r = 0
+    for c_i,c in enumerate(list_names):
+        # Loop on the different class, we will consider each group one after the other
+        print("For class :",c)
+        labels_bags_c = labels_bags[c_i]
+        labels_instance_c = labels_instance[c_i]
+        
+        kf = KFold(n_splits=nFolds, shuffle=True, random_state=r)
+        algorithm = 'SIL'
+        for train_index, test_index in kf.split(labels_bags_c):
+            labels_bags_c_train, labels_bags_c_test = \
+                getTest_and_Train_Sets(labels_bags_c,train_index,test_index)
+            bags_train, bags_test = \
+                getTest_and_Train_Sets(bags,train_index,test_index)
+            _ , labels_instance_c_test = \
+                getTest_and_Train_Sets(labels_instance_c,train_index,test_index)
+            classifier = misvm.SIL(kernel='linear', C=1.0)
+            classifier.fit(bags_train, labels_bags_c_train)
+#            predictions = classifier.predict(bags_test)
+            pred_bag_labels, pred_instance_labels = classifier.predict(bags_test, instancePrediction=True)
+            bag_accuracy = np.average(labels_bags_c_test == np.sign(pred_bag_labels))
+            gt_instances_labels_stack = np.hstack(np.array(labels_instance_c_test))
+            instances_accuracy = np.average(gt_instances_labels_stack == np.sign(pred_instance_labels))
+            print('\n%s Bag Accuracy: %.1f%%' % (algorithm, 100 * bag_accuracy))
+            print('\n%s Instance Accuracy: %.1f%%' % (algorithm, 100 * instances_accuracy))           
            
 if __name__ == '__main__':
 #    main()
 #    testBirds()
-    testSIVAL()
+#    testSIVAL()
+    testSubsampledSIVAL()
+#    testNewsgroups()

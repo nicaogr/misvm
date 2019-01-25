@@ -25,9 +25,10 @@ def ExtractBirds():
     - list_names list of the names of the 13 classes
     - bags : list of the bags : a list of array of instances
     - labels_bags : array of the labels of the classes between -1 and 1 
-        per class : ie a list of number_of_class list 
+        per class : ie a list of number_of_class lists
     - labels_instance : array of the labels of the classes between -1 and 1 
         per class
+    This means that the instances and bags are always in the same order
     """
     
     
@@ -117,7 +118,7 @@ def ExtractBirds():
             
     # Quick test
     assert(len(bags)==number_of_bag)
-    for c in range(number_of_class):
+    for j in range(number_of_class):
         assert(len(labels_instance[j])==number_of_bag)
         assert(len(labels_instance[j])==number_of_bag)
             

@@ -88,13 +88,13 @@ def ExtractNewsgroups():
         if FirstTimeBag:
             bags += [bag]
             FirstTimeBag = False
-        labels_instance += [np.array(labels_instance_c)]
-        labels_bags  += [np.array(labels)]
+#        labels_instance += [np.array(labels_instance_c)]
+#        labels_bags  += [np.array(labels)]
 
     for j in range(number_of_class):
         for i in range(number_of_bag):
             labels_instance[j][i] = np.array(labels_instance[j][i])
-
+            
     # Quick test
     assert(len(bags)==number_of_bag)
     for j in range(number_of_class):
